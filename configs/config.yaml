@@ -1,0 +1,65 @@
+project:
+  name: "Streaming IoT Intrusion Detection with Drift Monitoring"
+  random_seed: 42
+
+paths:
+  raw_data_path: "data/raw/ciciot2023_sample.csv" # Set raw dataset path here
+  interim_dir: "data/interim"
+  processed_dir: "data/processed"
+  models_dir: "models"
+  reports_metrics_dir: "reports/metrics"
+  reports_figures_dir: "reports/figures"
+
+schema:
+  target_column: "Label" # Set target column here
+  timestamp_column: null   # Set time column here if available
+  group_column: null       # Set group column here if available
+  id_columns: ["flow_id", "id"]
+  benign_labels: ["benign", "Benign", "BENIGN", "normal", "Normal"]
+
+sampling:
+  enabled: true
+  max_rows: 50000
+  strategy: "stratified" # one of: random, stratified
+
+splitting:
+  train_size: 0.7
+  val_size: 0.15
+  test_size: 0.15
+  min_class_count: 2
+
+preprocessing:
+  imputer_strategy: "median"
+  scale_numeric: true
+
+models:
+  baseline:
+    type: "logistic_regression"
+    params:
+      max_iter: 500
+      class_weight: "balanced"
+      n_jobs: -1
+  stronger:
+    type: "random_forest"
+    params:
+      n_estimators: 300
+      max_depth: 24
+      min_samples_leaf: 2
+      class_weight: "balanced_subsample"
+      random_state: 42
+      n_jobs: -1
+
+monitoring:
+  psi_threshold: 0.2
+  jsd_threshold: 0.1
+  alert_rate_spike_threshold: 0.15
+
+streaming:
+  batch_size: 256
+
+serving:
+  top_k_probabilities: 5
+
+
+runtime:
+  active_model: "stronger_model"

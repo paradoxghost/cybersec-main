@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "streaming-iot-ids-drift"
+version = "0.1.0"
+description = "Streaming IoT Intrusion Detection with Drift Monitoring"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Your Name"}]
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
